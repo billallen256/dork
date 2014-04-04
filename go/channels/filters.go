@@ -49,6 +49,7 @@ func main() {
 	// create the filters
 	filters := make([]*Filter, 0, 3)
 	filters = append(filters, NewFilter("upper", func(in string) string { return strings.ToUpper(in) }))
+	filters = append(filters, NewFilter("len", func(in string) string { return fmt.Sprintf("%d %s", len(in), in) }))
 	toFilters := make(chan string, 10)
 	toPrinter := make(chan string, 10)
 
