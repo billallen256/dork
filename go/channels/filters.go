@@ -47,7 +47,7 @@ func main() {
 	}
 
 	// create the filters
-	filters := make([]*Filter, 3)
+	filters := make([]*Filter, 0, 3)
 	filters = append(filters, NewFilter("upper", func(in string) string { return strings.ToUpper(in) }))
 	toFilters := make(chan string, 10)
 	toPrinter := make(chan string, 10)
@@ -58,7 +58,6 @@ func main() {
 			next := <-toFilters
 
 			for _, filter := range filters {
-				fmt.Println("Running filter", filter.Name)
 				filter.Process(next)
 				next = filter.Result()
 			}
