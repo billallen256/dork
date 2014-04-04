@@ -55,8 +55,8 @@ func main() {
 
 	// connect the filters
 	go func() {
-		for {
-			next := <-toFilters
+		for item := range toFilters {
+			next := item
 
 			for _, filter := range filters {
 				filter.Process(next)
@@ -65,6 +65,8 @@ func main() {
 
 			toPrinter <- next
 		}
+
+		close(toPrinter)
 	}()
 
 	// read from the file
@@ -76,6 +78,8 @@ func main() {
 			fmt.Println("Reading", line)
 			toFilters <- line
 		}
+
+		close(toFilters)
 	}()
 
 	// print the output
