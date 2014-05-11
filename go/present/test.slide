@@ -1,0 +1,27 @@
+Testing Slides for Go Present
+Dorking with Slides
+11 May 2014
+Tags: test, slides, dork
+
+Bill
+Foo Bar, Baz Inc.
+foo@bar.baz
+http://bar.baz
+
+* Test Slide 1
+Your Mom
+
+* Test Slide 2
+It just happens to be Mothers Day.
+
+* Installation
+  go get code.google.com/p/go.tools/cmd/present
+
+* Running
+- Run localhost:
+  $GOPATH/bin/present
+- Run remote:
+  $GOPATH/bin/present -http=":3999" -play=false
+
+* Resources
+- More at [[https://code.google.com/p/go/source/browse/present/doc.go?repo=tools][code.google.com]]
