@@ -116,5 +116,15 @@ func main() {
 		pathsFolder.AddFeature(pm)
 	}
 
+	for code := range airportsVisited {
+		airport := airports[code]
+		city := airport.City
+		lat := airport.Lat
+		lon := airport.Lon
+		pm := gokml.NewPlacemark(city, "", gokml.NewPoint(lat, lon, 0.0))
+		pm.SetStyle("AirportStyle")
+		airportsFolder.AddFeature(pm)
+	}
+
 	fmt.Println(kml.Render())
 }
