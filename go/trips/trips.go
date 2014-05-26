@@ -77,6 +77,18 @@ func main() {
 	}
 
 	scanner = bufio.NewScanner(tripsFile)
+	airportsVisited := make(map[string]bool)
+
+	kml := gokml.NewKML()
+	pathsFolder := gokml.NewFolder("paths", "")
+	airportsFolder := gokml.NewFolder("airports", "")
+	kml.AddFolder(pathsFolder)
+	kml.AddFolder(airportsFolder)
+	pathStyle := gokml.NewStyle("PathStyle", 240, 255, 0, 0)
+	airportStyle := gokml.NewStyle("AirportStyle", 240, 255, 0, 255)
+	airportStyle.SetIconURL("http://maps.google.com/mapfiles/kml/shapes/airports.png")
+	pathsFolder.AddFeature(pathStyle)
+	airportsFolder.AddFeature(airportStyle)
 
 	for scanner.Scan() {
 		s := scanner.Text()
@@ -86,17 +98,23 @@ func main() {
 		s = strings.Replace(s, "]", "", -1)
 		codes := strings.Split(s, ",")
 
+		path := gokml.NewLineString()
+
 		for _, code := range codes {
 			code := strings.TrimSpace(code)
+			airportsVisited[code] = true
 
 			if a, found := airports[code]; found {
-				fmt.Println(a.City, a.Lat, a.Lon)
+				path.AddPoint(gokml.NewPoint(a.Lat, a.Lon, 0.0))
 			} else {
-				fmt.Println(code, "not found")
+				fmt.Fprintf(os.Stderr, "%s not found\n", code)
 			}
 		}
+
+		pm := gokml.NewPlacemark("", "", path)
+		pm.SetStyle("PathStyle")
+		pathsFolder.AddFeature(pm)
 	}
 
-	kml := gokml.NewKML()
 	fmt.Println(kml.Render())
 }
