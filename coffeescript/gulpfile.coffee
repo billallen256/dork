@@ -14,6 +14,7 @@ gulp.task 'lint', ->
 gulp.task 'compile', ->
     gulp.src './test.coffee'
         .pipe coffee bare: true
+        .pipe gulp.dest '.'
         .on 'error', gutil.log
 
 gulp.task 'default', ['lint', 'compile']
