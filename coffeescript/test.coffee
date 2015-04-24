@@ -14,5 +14,5 @@ $ = (id) -> document.getElementById(id)
                     for k,v of i
                         x += "<tr><td>"+k+"</td><td>"+v+"</td></tr>"
                 x += "</table>"
-            $("names").innerHTML = x
+                $("names").innerHTML = x
     xhr.send null
