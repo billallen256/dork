@@ -10,7 +10,7 @@ $ = (id) -> document.getElementById(id)
             if xhr.status is 200
                 j = JSON.parse xhr.responseText
                 x = "<table>"
-                for i of j.weather
+                for i in j.weather
                     for k,v of i
                         x += "<tr><td>"+k+"</td><td>"+v+"</td></tr>"
                 x += "</table>"
