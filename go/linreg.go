@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"math"
+	"math/rand"
 	"os"
 	"strconv"
 )
@@ -79,6 +80,16 @@ func corr(X *[]float64, Y *[]float64) float64 {
 	return sum(&xy) / math.Sqrt(sum(&x2) * sum(&y2))
 }
 
+func randArray(size int) *[]float64 {
+	r := make([]float64, size)
+
+	for i := 0; i < size; i++ {
+		r[i] = rand.Float64()
+	}
+
+	return &r
+}
+
 func main() {
 	f, err := os.Open(os.Args[1])
 	defer f.Close()
@@ -87,7 +98,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	xs, ys := readVals(f)
+	//xs, ys := readVals(f)
+	xs := randArray(100)
+	ys := randArray(100)
 
 	for i := range *xs {
 		fmt.Println((*xs)[i], (*ys)[i])
