@@ -9,6 +9,8 @@ import (
 	"strconv"
 )
 
+// example follows code from http://onlinestatbook.com/2/regression/intro.html
+
 func sum(a *[]float64) float64 {
 	s := 0.0
 
@@ -28,7 +30,7 @@ func std(a *[]float64) float64 {
 	s := 0.0
 
 	for _, x := range *a {
-		s += math.Pow(x - m, 2.0)
+		s += math.Pow(x-m, 2.0)
 	}
 
 	return math.Sqrt(s / float64(len(*a)))
@@ -77,7 +79,7 @@ func corr(X *[]float64, Y *[]float64) float64 {
 		y2[i] = math.Pow(y, 2.0)
 	}
 
-	return sum(&xy) / math.Sqrt(sum(&x2) * sum(&y2))
+	return sum(&xy) / math.Sqrt(sum(&x2)*sum(&y2))
 }
 
 func randArray(size int) *[]float64 {
