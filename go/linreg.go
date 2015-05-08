@@ -30,7 +30,7 @@ func std(a *[]float64) float64 {
 	s := 0.0
 
 	for _, x := range *a {
-		s += math.Pow(x-m, 2.0)
+		s += (x-m)*(x-m)
 	}
 
 	return math.Sqrt(s / float64(len(*a)))
@@ -62,7 +62,7 @@ func readVals(f *os.File) (*[]float64, *[]float64) {
 	return &xs, &ys
 }
 
-func corr(X *[]float64, Y *[]float64) float64 {
+func corr(X, Y *[]float64) float64 {
 	xmean := mean(X)
 	ymean := mean(Y)
 	//x := make([]float64, len(*X))
@@ -75,11 +75,39 @@ func corr(X *[]float64, Y *[]float64) float64 {
 		x := (*X)[i] - xmean
 		y := (*Y)[i] - ymean
 		xy[i] = x * y
-		x2[i] = math.Pow(x, 2.0)
-		y2[i] = math.Pow(y, 2.0)
+		x2[i] = x*x
+		y2[i] = y*y
 	}
 
 	return sum(&xy) / math.Sqrt(sum(&x2)*sum(&y2))
+}
+
+func linreg(X, Y *[]float64) (slope, intercept float64) {
+	mx := mean(X)
+	my := mean(Y)
+	sx := std(X)
+	sy := std(Y)
+	r := corr(X, Y)
+
+	slope = r * (sy / sx)
+	intercept = my - (slope * mx)
+	return slope, intercept
+}
+
+func coeffDetermination(X, Y *[]float64) float64 {
+	N := len(*X)
+	mx := mean(X)
+	my := mean(Y)
+	sx := std(X)
+	sy := std(Y)
+	s := 0.0
+
+	for i := 0; i < N; i++ {
+		s += ((*X)[i] - mx) * ((*Y)[i] - my)
+	}
+
+	R := (1/float64(N)) * (s / (sx * sy))
+	return R * R
 }
 
 func randArray(size int) *[]float64 {
@@ -93,33 +121,31 @@ func randArray(size int) *[]float64 {
 }
 
 func main() {
-	f, err := os.Open(os.Args[1])
-	defer f.Close()
+	//f, err := os.Open(os.Args[2])
+	num64, err := strconv.ParseInt(os.Args[1], 10, 64)
+	num := int(num64)
+	//defer f.Close()
 
 	if err != nil {
 		os.Exit(1)
 	}
 
 	//xs, ys := readVals(f)
-	xs := randArray(100)
-	ys := randArray(100)
+	xs := randArray(num)
+	ys := randArray(num)
 
-	for i := range *xs {
-		fmt.Println((*xs)[i], (*ys)[i])
-	}
+	//for i := range *xs {
+	//	fmt.Println((*xs)[i], (*ys)[i])
+	//}
 
-	mx := mean(xs)
-	my := mean(ys)
-	sx := std(xs)
-	sy := std(ys)
-	r := corr(xs, ys)
+	slope, intercept := linreg(xs, ys)
 
-	slope := r * (sy / sx)
-	intercept := my - (slope * mx)
-
-	fmt.Println("mean x", mx, "mean y", my)
-	fmt.Println("std x", sx, "std y", sy)
-	fmt.Println("r", r)
+	//fmt.Println("mean x", mx, "mean y", my)
+	//fmt.Println("std x", sx, "std y", sy)
+	//fmt.Println("r", r)
 	fmt.Println("b", slope)
 	fmt.Println("A", intercept)
+
+	r2 := coeffDetermination(xs, ys)
+	fmt.Println("R**2", r2)
 }
